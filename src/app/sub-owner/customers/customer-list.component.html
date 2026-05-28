@@ -1,0 +1,82 @@
+<section class="customers-page">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Sub Owner CRM</p>
+      <h1>Customers</h1>
+      <p>Add, search, and manage your customer contacts in one place.</p>
+    </div>
+    <div class="hero-stats">
+      <article class="stat-card">
+        <span>Total Customers</span>
+        <strong>{{ customers.length }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Villages Covered</span>
+        <strong>{{ villageCount }}</strong>
+      </article>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <article class="card form-card">
+      <h2>Add Customer</h2>
+      <form [formGroup]="form" (ngSubmit)="add()" novalidate>
+        <label>
+          Name
+          <input type="text" formControlName="name" placeholder="Customer name" />
+          <small class="error" *ngIf="form.controls.name.touched && form.controls.name.invalid">
+            Enter at least 2 characters.
+          </small>
+        </label>
+        <label>
+          House Number
+          <input type="text" formControlName="houseNo" placeholder="House Number" />
+          <small class="error" *ngIf="form.controls.houseNo.touched && form.controls.houseNo.invalid">
+            Enter at least 2 characters.
+          </small>
+        </label>
+
+        <label>
+          Phone
+          <input type="tel" formControlName="phone" placeholder="10-digit phone" />
+          <small class="error" *ngIf="form.controls.phone.touched && form.controls.phone.invalid">
+            Enter valid 10-digit phone number.
+          </small>
+        </label>
+
+        <label>
+          Village
+          <input type="text" formControlName="village" placeholder="Village (optional)" />
+        </label>
+
+        <button type="submit">Add Customer</button>
+      </form>
+    </article>
+
+    <article class="card list-card">
+      <div class="list-head">
+        <h2>Customer List</h2>
+        <span class="count">{{ customers.length }}</span>
+      </div>
+
+      <div *ngIf="customers.length; else emptyState" class="rows">
+        <div class="row" *ngFor="let customer of customers; trackBy: trackById">
+          <div class="avatar">{{ initials(customer.name) }}</div>
+          <div class="row-main">
+            <h3>{{ customer.name }}</h3>
+            <p class="phone">{{ customer.phone }}</p>
+            <p class="village" *ngIf="customer.village">{{ customer.village }}</p>
+          </div>
+          <div class="row-actions">
+            <button type="button" class="edit-btn" (click)="''">Edit</button>
+            <button type="button" class="danger" (click)="remove(customer)">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #emptyState>
+        <p class="empty">No customers yet. Add your first customer.</p>
+      </ng-template>
+    </article>
+  </div>
+</section>

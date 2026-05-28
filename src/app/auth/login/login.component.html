@@ -1,0 +1,35 @@
+<div class="login-page">
+  <section class="login-shell">
+    <div class="brand-panel">
+      <p class="eyebrow">Farmer Business System</p>
+      <h1>Welcome Back</h1>
+      <p>Sign in to manage customers, inventory, and sales from one dashboard.</p>
+      <ul>
+        <li>Track customer purchases</li>
+        <li>Record smart unit-based sales</li>
+        <li>View summary and print receipts</li>
+      </ul>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="login-form" novalidate>
+      <h2>Sign In</h2>
+      <p class="sub">Use your registered account credentials.</p>
+
+      <label>
+        Email
+        <input formControlName="email" type="email" placeholder="you@example.com" inputmode="email" autocomplete="username" autocapitalize="off" />
+      </label>
+      <small class="error" *ngIf="form.controls.email.touched && form.controls.email.invalid">Enter a valid email</small>
+
+      <label>
+        Password
+        <input formControlName="password" type="password" placeholder="Enter password" autocomplete="current-password" />
+      </label>
+      <small class="error" *ngIf="form.controls.password.touched && form.controls.password.invalid">Password is required</small>
+
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <button type="submit" [disabled]="loading || form.invalid">{{ loading ? 'Signing in...' : 'Login' }}</button>
+    </form>
+  </section>
+</div>

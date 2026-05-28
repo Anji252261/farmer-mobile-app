@@ -1,0 +1,220 @@
+.warehouse-details-card {
+  background: var(--app-surface);
+  border-radius: 12px;
+  border: 1px solid var(--app-line);
+  padding: 22px;
+  box-shadow: var(--app-shadow-sm);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.close-btn {
+  background: var(--app-surface-soft);
+  border: 1px solid var(--app-line);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--app-ink-700);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
+  }
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--app-ink-900);
+}
+
+.details-container {
+  margin-bottom: 0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--app-line);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  label {
+    font-weight: 500;
+    color: var(--app-muted-600);
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .value {
+    font-weight: 600;
+    color: var(--app-ink-900);
+    font-size: 15px;
+    text-align: right;
+    flex: 1;
+    
+    &.status {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      
+      &.yes {
+        background: var(--app-success-soft);
+        color: var(--app-success);
+      }
+      
+      &.no {
+        background: var(--app-danger-soft);
+        color: var(--app-danger);
+      }
+
+      &.paid {
+        background: var(--app-success-soft);
+        color: var(--app-success);
+      }
+
+      &.unpaid {
+        background: var(--app-warning-soft);
+        color: var(--app-warning);
+      }
+    }
+  }
+}
+
+.purchase-block {
+  margin-top: 18px;
+}
+
+.purchase-title {
+  margin: 0 0 12px;
+  font-size: 17px;
+  color: var(--app-ink-900);
+}
+
+.purchase-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--app-line);
+  border-radius: 10px;
+}
+
+.purchase-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+
+  th,
+  td {
+    text-align: left;
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--app-line);
+    font-size: 13px;
+  }
+
+  th {
+    background: var(--app-surface-soft);
+    color: var(--app-ink-700);
+    font-weight: 700;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 700;
+
+  &.paid {
+    background: var(--app-success-soft);
+    color: var(--app-success);
+  }
+
+  &.unpaid {
+    background: var(--app-warning-soft);
+    color: var(--app-warning);
+  }
+}
+
+.proof-link {
+  color: var(--app-primary);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.empty-note {
+  margin: 12px 0 0;
+  color: var(--app-muted-600);
+  font-size: 14px;
+}
+
+.quantity-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+
+  .qty-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--app-primary);
+  }
+
+  .unit-tag {
+    background: color-mix(in srgb, var(--app-primary) 14%, var(--app-surface));
+    color: var(--app-primary-deep);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 600px) {
+  .warehouse-details-card {
+    padding: 16px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    .value {
+      text-align: left;
+    }
+  }
+
+  .quantity-display {
+    justify-content: flex-start;
+  }
+}

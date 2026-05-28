@@ -1,0 +1,185 @@
+<h1 class="modal-title">{{ item && item.id ? 'Edit Item' : 'Add New Item' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+  <!-- IMAGE UPLOAD — small icon style -->
+  <div class="field">
+    <label>Image</label>
+    <label class="file-label">
+      <input type="file" (change)="onFileChange($event)" hidden accept="image/*" />
+      <div class="upload-row">
+        <div class="upload-thumb">
+          <img *ngIf="imagePreview" [src]="imagePreview" alt="preview" />
+          <svg *ngIf="!imagePreview" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="3"
+                  stroke="currentColor" stroke-width="1.5"/>
+            <path d="M3 15l5-5 4 4 3-3 6 6" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+            <path d="M15 7h2m-1-1v2" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="upload-text">Choose file (optional)</span>
+      </div>
+    </label>
+  </div>
+
+  <!-- ITEM NAME -->
+  <div class="field">
+    <label>Item Name *</label>
+    <div class="input-wrapper">
+      <input formControlName="name" type="text" placeholder="Enter item name" [readonly]="showAvailabilityFields" />
+      <button *ngIf="!showAvailabilityFields" type="button" class="voice" (click)="startVoice('name')"
+              [class.listening]="listeningField === 'name'">
+        <ng-container *ngIf="listeningField === 'name'; else micOn">
+          <span class="mic-off-wrap">
+            <svg class="voice-icon" viewBox="0 0 24 24" fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
+              <line x1="4" y1="4" x2="20" y2="20"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M9 9v2a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17 16.95A7 7 0 0 1 5 11H3m4 0a7 7 0 0 0 11.9 5"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="19" x2="12" y2="23"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="pulse-ring"></span>
+          </span>
+        </ng-container>
+        <ng-template #micOn>
+          <svg class="voice-icon" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M19 11a7 7 0 0 1-14 0"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="18" x2="12" y2="23"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </ng-template>
+      </button>
+    </div>
+  </div>
+
+  <!-- PRICE + QUANTITY -->
+  <div class="row-two">
+    <div class="field">
+      <label>Price (₹)</label>
+      <div class="input-wrapper">
+        <input formControlName="price" type="number" step="0.01" placeholder="0" />
+        <button type="button" class="voice" (click)="startVoice('price')"
+                [class.listening]="listeningField === 'price'">
+          <svg class="voice-icon" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M19 11a7 7 0 0 1-14 0"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="18" x2="12" y2="23"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Quantity</label>
+      <div class="input-wrapper">
+        <input formControlName="quantity" type="number" placeholder="0" />
+        <button type="button" class="voice" (click)="startVoice('quantity')"
+                [class.listening]="listeningField === 'quantity'">
+          <svg class="voice-icon" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M19 11a7 7 0 0 1-14 0"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="18" x2="12" y2="23"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIT -->
+  <div class="field">
+    <label>Unit</label>
+    <div class="input-wrapper select-wrap">
+      <select formControlName="unit">
+        <option value="">Select unit</option>
+        <option *ngFor="let u of units" [value]="u">{{ u }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- VENDOR NAME -->
+  <div class="field">
+    <label>Vendor/Supplier Name</label>
+    <div class="input-wrapper">
+      <input formControlName="vendor" type="text" placeholder="Enter vendor name" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Grade</label>
+    <div class="input-wrapper">
+      <input formControlName="grade" type="text" placeholder="Enter grade (A/B/Premium)" />
+    </div>
+  </div>
+
+  <!-- PURCHASE DATE -->
+  <div class="field">
+    <label>Purchase Date</label>
+    <div class="input-wrapper">
+      <input formControlName="purchaseDate" type="date" />
+    </div>
+  </div>
+
+  <!-- PAYMENT STATUS -->
+  <div class="field">
+    <label>
+      <input formControlName="paid" type="checkbox" />
+      <span>Payment Done</span>
+    </label>
+  </div>
+
+  <div class="field" *ngIf="showAvailabilityFields">
+    <label>Current Available Quantity</label>
+    <div class="input-wrapper">
+      <input formControlName="availableQuantity" type="number" readonly />
+    </div>
+  </div>
+
+  <div class="field" *ngIf="form.get('paid')?.value">
+    <label>Payment Proof (Image)</label>
+    <label class="file-label">
+      <input type="file" (change)="onPaymentProofChange($event)" hidden accept="image/*" />
+      <div class="upload-row">
+        <div class="upload-thumb">
+          <img *ngIf="paymentProofPreview" [src]="paymentProofPreview" alt="payment proof" />
+          <svg *ngIf="!paymentProofPreview" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M3 15l5-5 4 4 3-3 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="upload-text">Upload payment screenshot</span>
+      </div>
+    </label>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions-two">
+    <button type="button" class="btn cancel" (click)="cancel()">Cancel</button>
+    <button type="submit" class="btn save" [disabled]="loading">
+      {{ loading
+          ? (item?.id ? 'Updating...' : 'Saving...')
+          : (item?.id ? 'Update' : 'Save') }}
+    </button>
+  </div>
+
+</form>

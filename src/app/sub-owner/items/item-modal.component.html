@@ -1,0 +1,11 @@
+<div class="modal-backdrop" (click)="close()"></div>
+<div class="modal">
+  <button class="close" (click)="close()">×</button>
+  <app-item-form
+    [item]="item"
+    [showAvailabilityFields]="showAvailabilityFields"
+    (save)="onSave($event)"
+    (cancelForm)="close()"
+    (showWarehouseDetails)="onViewWarehouseDetails($event)"
+  ></app-item-form>
+</div>

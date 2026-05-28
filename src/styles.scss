@@ -1,1 +1,74 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+	--app-primary: #1565c0;
+	--app-primary-deep: #0f56a6;
+	--app-primary-soft: #d9ecff;
+	--app-accent-soft: #d8f3e5;
+	--app-ink-900: #102a43;
+	--app-ink-700: #334e68;
+	--app-muted-600: #627d98;
+	--app-line: #d9e2ec;
+	--app-surface: #ffffff;
+	--app-surface-soft: #f4f8fb;
+	--app-hero-gradient: linear-gradient(130deg, #113c71 0%, #1565c0 65%, #2d88e6 100%);
+	--app-page-background:
+		radial-gradient(circle at 90% -10%, var(--app-primary-soft) 0, rgba(217, 236, 255, 0) 52%),
+		radial-gradient(circle at -10% 110%, var(--app-accent-soft) 0, rgba(216, 243, 229, 0) 44%),
+		var(--app-surface-soft);
+	--app-danger: #b52a2a;
+	--app-danger-soft: #fff5f5;
+	--app-success: #155724;
+	--app-success-soft: #d4edda;
+	--app-warning: #856404;
+	--app-warning-soft: #fff3cd;
+	--app-info: #0c5460;
+	--app-info-soft: #d1ecf1;
+	--app-shadow-sm: 0 2px 8px rgba(16, 42, 67, 0.08);
+	--app-shadow-md: 0 8px 24px rgba(16, 42, 67, 0.12);
+}
+
+:root[data-theme='dark'] {
+	--app-primary: #4d97e8;
+	--app-primary-deep: #2e7fd8;
+	--app-primary-soft: #10273e;
+	--app-accent-soft: #1a2d2a;
+	--app-ink-900: #edf2f7;
+	--app-ink-700: #d2dbe6;
+	--app-muted-600: #9eb0c4;
+	--app-line: #2c3f52;
+	--app-surface: #13202d;
+	--app-surface-soft: #0e1823;
+	--app-hero-gradient: linear-gradient(130deg, #0a2744 0%, #1d5a98 65%, #2c73ba 100%);
+	--app-page-background:
+		radial-gradient(circle at 90% -10%, rgba(24, 56, 90, 0.8) 0, rgba(16, 27, 41, 0) 52%),
+		radial-gradient(circle at -10% 110%, rgba(29, 55, 52, 0.7) 0, rgba(16, 27, 41, 0) 44%),
+		#0b141f;
+	--app-danger: #ff8c8c;
+	--app-danger-soft: #3b1f24;
+	--app-success: #93dfb1;
+	--app-success-soft: #1b3325;
+	--app-warning: #f1d38a;
+	--app-warning-soft: #352e1f;
+	--app-info: #99d7ea;
+	--app-info-soft: #1b2d35;
+	--app-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+	--app-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+html,
+body {
+	height: 100%;
+	margin: 0;
+	overflow: hidden;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	color: var(--app-ink-900);
+	background: var(--app-page-background);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+app-root {
+	display: block;
+	height: 100%;
+}
