@@ -1,0 +1,150 @@
+@use 'sass:math';
+@import './_variables.scss';
+@import './_mixins.scss';
+@import './_base.scss';
+@import './_layout.scss';
+
+// component overrides
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: $primary-color;
+  color: white;
+  @include respond-to(sm) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.header-right {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+@include respond-to(sm) {
+  .hamburger {
+    display: inline-block;
+  }
+}
+
+.btn-logout {
+  padding: 0.5rem 1rem;
+  background-color: $error-color;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+}
+.icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: white;
+}
+
+.sidebar {
+  width: 220px;
+  background-color: white;
+  padding: 1rem;
+  border-right: 1px solid #ddd;
+  min-height: calc(100vh - 60px);
+  @include respond-to(sm) {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transform: translateY(-100%);
+    transition: transform 0.3s;
+    &.open {
+      transform: translateY(0);
+    }
+  }
+}
+
+.sidebar-backdrop {
+  @include respond-to(sm) {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 900;
+  }
+}
+
+.sidebar nav h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 0.75rem;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: $text-color;
+  transition: color 0.2s;
+}
+
+.sidebar a:hover {
+  color: $primary-color;
+}
+
+// table styling
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  text-align: left;
+}
+
+.table thead {
+  background-color: #e9ecef;
+}
+
+// responsive form
+form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+form button {
+  margin-top: 1rem;
+}
+

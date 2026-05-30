@@ -1,0 +1,271 @@
+:host {
+  display: block;
+}
+
+.sub-dashboard {
+  display: grid;
+  gap: 14px;
+}
+
+.hero {
+  background: var(--app-hero-gradient);
+  color: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--app-shadow-md);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero h1 {
+  margin: 8px 0 5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.hero p {
+  margin: 0;
+  max-width: 54ch;
+  opacity: 0.92;
+}
+
+.stats-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stat-card {
+  border: 1px solid var(--app-line);
+  border-radius: 12px;
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow-sm);
+  padding: 12px;
+}
+
+.stat-card p {
+  margin: 0;
+  color: var(--app-muted-600);
+  font-size: 0.84rem;
+}
+
+.stat-card strong {
+  margin-top: 4px;
+  display: block;
+  color: var(--app-ink-900);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.content-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+.panel {
+  border: 1px solid var(--app-line);
+  border-radius: 14px;
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow-sm);
+  padding: 12px;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.panel-head h2 {
+  margin: 0;
+  color: var(--app-ink-900);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.panel-head span {
+  font-size: 0.78rem;
+  color: var(--app-primary-deep);
+  background: color-mix(in srgb, var(--app-primary) 14%, var(--app-surface));
+  border: 1px solid var(--app-line);
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.tips {
+  display: grid;
+  gap: 10px;
+}
+
+.tip {
+  border: 1px solid var(--app-line);
+  border-radius: 10px;
+  background: var(--app-surface-soft);
+  padding: 10px;
+}
+
+.tip-high {
+  border-color: color-mix(in srgb, var(--app-danger) 40%, var(--app-line));
+  background: color-mix(in srgb, var(--app-danger-soft) 70%, var(--app-surface));
+}
+
+.tip h3 {
+  margin: 0 0 4px;
+  color: var(--app-ink-900);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.tip p {
+  margin: 0 0 8px;
+  color: var(--app-ink-700);
+  font-size: 0.9rem;
+}
+
+.tip a {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 700;
+  color: var(--app-primary-deep);
+}
+
+.simple-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.simple-list li {
+  border: 1px solid var(--app-line);
+  background: var(--app-surface-soft);
+  border-radius: 10px;
+  padding: 9px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  color: var(--app-ink-700);
+}
+
+.empty {
+  margin: 0;
+  color: var(--app-muted-600);
+}
+
+.quick-actions {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+.quick-actions a {
+  text-decoration: none;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid var(--app-line);
+  background: linear-gradient(120deg, var(--app-primary), var(--app-primary-deep));
+  color: #fff;
+  font-weight: 600;
+  padding: 11px 12px;
+}
+
+@media (max-width: 900px) {
+  .hero h1 {
+    font-size: 1.88rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+
+  .hero p {
+    font-size: 0.93rem;
+    line-height: 1.35;
+  }
+
+  .stat-card p {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .stat-card strong {
+    font-size: 1.02rem;
+    font-weight: 600;
+  }
+
+  .panel-head h2 {
+    font-weight: 600;
+  }
+
+  .tip h3 {
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 1.56rem;
+    font-weight: 580;
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.07em;
+  }
+
+  .stat-card p {
+    font-size: 0.9rem;
+  }
+
+  .stat-card strong {
+    font-size: 1rem;
+    font-weight: 580;
+  }
+
+  .panel-head h2,
+  .tip h3 {
+    font-weight: 580;
+  }
+
+  .quick-actions a {
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero h1 {
+    font-size: 1.42rem;
+    font-weight: 560;
+  }
+}
+
+@media (min-width: 700px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .quick-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .quick-actions {
+    margin-bottom: 12px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+}

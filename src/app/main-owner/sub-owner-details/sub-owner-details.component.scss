@@ -1,0 +1,146 @@
+:host {
+  display: block;
+}
+
+.owner-details {
+  display: grid;
+  gap: 14px;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.top-row h1 {
+  margin: 0;
+  color: var(--app-ink-900);
+}
+
+.top-row p {
+  margin: 4px 0 0;
+  color: var(--app-muted-600);
+}
+
+.back-link {
+  text-decoration: none;
+  font-weight: 700;
+  color: var(--app-primary-deep);
+  background: color-mix(in srgb, var(--app-primary) 14%, var(--app-surface));
+  border: 1px solid var(--app-line);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.panel {
+  border: 1px solid var(--app-line);
+  border-radius: 12px;
+  background: var(--app-surface);
+  padding: 12px;
+  box-shadow: var(--app-shadow-sm);
+}
+
+.panel h2 {
+  margin: 0 0 10px;
+  color: var(--app-ink-900);
+}
+
+.panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.panel li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--app-line);
+  background: var(--app-surface-soft);
+  border-radius: 8px;
+  padding: 9px;
+  color: var(--app-ink-700);
+}
+
+.panel li span {
+  min-width: 0;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .owner-details {
+    gap: 12px;
+  }
+
+  .top-row h1 {
+    font-size: 1.25rem;
+  }
+
+  .top-row p {
+    font-size: 0.92rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .panel {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .panel h2 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .panel li {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .top-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    width: 100%;
+    min-height: 42px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+  }
+
+  .panel li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 380px) {
+  .top-row h1 {
+    font-size: 1.12rem;
+  }
+
+  .panel {
+    padding: 9px;
+  }
+}

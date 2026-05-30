@@ -1,0 +1,162 @@
+/* App layout: sidebar + main content under header */
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.auth-main {
+  height: 100%;
+  min-height: 0;
+}
+
+.app-container {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--app-page-background);
+}
+
+app-sidebar {
+  flex: 0 0 220px;
+  min-width: 220px;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 60px 0 0 220px;
+  background: color-mix(in srgb, var(--app-ink-900) 8%, transparent);
+}
+
+.main-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--app-primary) 35%, var(--app-surface));
+  border-radius: 999px;
+}
+
+.main-content > * {
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.mobile-tabbar {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  app-sidebar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    z-index: 90;
+    width: 250px;
+    min-width: 250px;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  app-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    inset: 60px 0 0 0;
+    z-index: 80;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
+  .main-content.with-mobile-tabs {
+    padding-bottom: calc(132px + env(safe-area-inset-bottom));
+  }
+
+  .main-content > * {
+    max-width: 100%;
+  }
+
+  .mobile-tabbar {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 95;
+    border-top: 1px solid var(--app-line);
+    border-radius: 12px 12px 0 0;
+    background: color-mix(in srgb, var(--app-surface) 96%, transparent);
+    box-shadow: 0 -6px 18px rgba(16, 42, 67, 0.14);
+    backdrop-filter: blur(6px);
+    padding: 5px 8px calc(5px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-tabbar a {
+    text-decoration: none;
+    text-align: center;
+    color: var(--app-ink-700);
+    border-radius: 9px;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 4px;
+  }
+
+  .mobile-tabbar a.active {
+    background: linear-gradient(120deg, var(--app-primary), var(--app-primary-deep));
+    color: #fff;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 12px;
+  }
+
+  .main-content.with-mobile-tabs {
+    padding-bottom: calc(126px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-tabbar {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 5px;
+    gap: 4px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .mobile-tabbar a {
+    font-size: 0.74rem;
+    min-height: 34px;
+  }
+}

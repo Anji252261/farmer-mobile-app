@@ -1,0 +1,84 @@
+<section class="warehouse-details-card">
+  <div class="card-header">
+    <h2 class="card-title">Warehouse Details</h2>
+    <button class="close-btn" type="button" (click)="closeModal()">Close</button>
+  </div>
+
+  <div class="details-container">
+    <div class="detail-row">
+      <label>Item Name</label>
+      <span class="value">{{ getValue('name') }}</span>
+    </div>
+
+    <div class="detail-row">
+      <label>Stock Status</label>
+      <span class="value status" [class.yes]="isInStock()" [class.no]="!isInStock()">
+        {{ isInStock() ? 'IN STOCK' : 'OUT OF STOCK' }}
+      </span>
+    </div>
+
+    <div class="detail-row">
+      <label>Total Bought Quantity</label>
+      <span class="value">{{ getTotalBoughtQuantity() }} {{ getValue('unit') }}</span>
+    </div>
+
+    <div class="detail-row">
+      <label>Total Available Quantity</label>
+      <div class="quantity-display">
+        <span class="qty-amount">{{ getTotalAvailableQuantity() || getQuantity() }}</span>
+        <span class="unit-tag">{{ getValue('unit') }}</span>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <label>Unpaid Purchases</label>
+      <span class="value">{{ getUnpaidPurchaseCount() }}</span>
+    </div>
+
+    <div class="detail-row">
+      <label>Item ID</label>
+      <span class="value">{{ getValue('id') }}</span>
+    </div>
+
+    <div class="purchase-block" *ngIf="getPurchaseHistory().length > 0; else noPurchases">
+      <h3 class="purchase-title">Purchase-wise Details</h3>
+      <div class="purchase-table-wrap">
+        <table class="purchase-table">
+          <thead>
+            <tr>
+              <th>Purchased From</th>
+              <th>Bought Qty</th>
+              <th>Available Qty</th>
+              <th>Rate</th>
+              <th>Paid</th>
+              <th>Proof</th>
+              <th>Bought Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of getPurchaseHistory(); trackBy: trackByPurchaseId">
+              <td>{{ row.supplierName }}</td>
+              <td>{{ row.boughtQuantity }} {{ getValue('unit') }}</td>
+              <td>{{ row.availableQuantity }} {{ getValue('unit') }}</td>
+              <td>₹{{ row.purchaseRate }}/{{ getValue('unit') }}</td>
+              <td>
+                <span class="status-pill" [class.paid]="row.paid" [class.unpaid]="!row.paid">
+                  {{ row.paid ? 'PAID' : 'PENDING' }}
+                </span>
+              </td>
+              <td>
+                <a *ngIf="row.paymentProofImage" [href]="row.paymentProofImage" target="_blank" rel="noopener" class="proof-link">View</a>
+                <span *ngIf="!row.paymentProofImage">-</span>
+              </td>
+              <td>{{ row.purchaseDate | date: 'mediumDate' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <ng-template #noPurchases>
+      <p class="empty-note">No purchase records available for this item.</p>
+    </ng-template>
+  </div>
+</section>

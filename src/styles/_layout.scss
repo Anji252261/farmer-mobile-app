@@ -1,0 +1,42 @@
+// layout helpers
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+  @include respond-to(md) {
+    padding: 0 0.5rem;
+  }
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -0.5rem;
+}
+
+.col {
+  flex: 1;
+  padding: 0 0.5rem;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// header/sidebar layout
+.app-container {
+  display: flex;
+  height: calc(100vh - 60px);
+  @include respond-to(sm) {
+    flex-direction: column;
+    height: auto;
+  }
+}
+
+main.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}

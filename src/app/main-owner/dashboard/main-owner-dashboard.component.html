@@ -1,0 +1,69 @@
+<section class="owner-dashboard">
+  <div class="hero">
+    <p class="eyebrow">Main Owner</p>
+    <h1>Owner Control Center</h1>
+    <p>Track your Sub Owners and review each owner's items and sales in one place.</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <article class="panel add-panel">
+      <div class="panel-head">
+        <h2>{{ editingSubOwnerId ? 'Edit Sub Owner' : 'Add Sub Owner' }}</h2>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="addSubOwner()" novalidate>
+        <label>
+          Full Name
+          <input formControlName="name" type="text" placeholder="Enter sub owner name" />
+        </label>
+        <small class="error" *ngIf="form.controls.name.touched && form.controls.name.invalid">Name must be at least 2 characters.</small>
+
+        <label>
+          Phone Number
+          <input formControlName="phone" type="tel" placeholder="10-digit phone" inputmode="numeric" />
+        </label>
+        <small class="error" *ngIf="form.controls.phone.touched && form.controls.phone.invalid">Enter valid 10-digit phone number.</small>
+
+        <label>
+          Shop Name
+          <input formControlName="shopName" type="text" placeholder="Enter shop name" />
+        </label>
+        <small class="error" *ngIf="form.controls.shopName.touched && form.controls.shopName.invalid">Shop name must be at least 2 characters.</small>
+
+        <label>
+          Password {{ editingSubOwnerId ? '(Optional: only if changing)' : '(Optional)' }}
+          <input formControlName="password" type="text" placeholder="Set or update password" autocomplete="new-password" />
+        </label>
+
+        <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+        <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+        <p class="success temp-pass" *ngIf="tempPassword">Temp Password: <strong>{{ tempPassword }}</strong></p>
+
+        <div class="form-actions">
+          <button type="submit" [disabled]="loading || form.invalid">{{ loading ? (editingSubOwnerId ? 'Updating...' : 'Adding...') : (editingSubOwnerId ? 'Update Sub Owner' : 'Add Sub Owner') }}</button>
+          <button type="button" class="secondary-btn" *ngIf="editingSubOwnerId" (click)="cancelEdit()">Cancel Edit</button>
+        </div>
+      </form>
+    </article>
+
+    <article class="panel">
+      <div class="panel-head">
+        <h2>Sub Owners</h2>
+        <span class="count">{{ (subOwners$ | async)?.length || 0 }}</span>
+      </div>
+
+      <div class="owner-grid" *ngIf="subOwners$ | async as owners">
+        <article class="owner-card" *ngFor="let s of owners">
+          <h3>{{ s.name }}</h3>
+          <p class="shop">{{ s.shopName || (s.name + ' Shop') }}</p>
+          <p>Password: {{ s.password || '-' }}</p>
+          <p>{{ s.phone || '-' }}</p>
+          <div class="owner-actions">
+            <button type="button" class="link-btn" (click)="startEdit(s)">Edit</button>
+            <a class="link" [routerLink]="['/main-owner/sub-owner', s.id]">View Items & Sales</a>
+          </div>
+        </article>
+      </div>
+    </article>
+  </div>
+</section>

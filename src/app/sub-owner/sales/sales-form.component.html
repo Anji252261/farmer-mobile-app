@@ -1,0 +1,260 @@
+<section class="sales-page">
+  <div class="hero">
+    <p class="eyebrow">Sub Owner Sales</p>
+    <h1>Direct Customer Sale</h1>
+    <p>Add customer, choose multiple items, and sell by quantity or by amount (example: Rs 10).</p>
+  </div>
+
+  <div class="sales-body">
+  <article class="card">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field customer-field">
+        <label for="customerId">Customer</label>
+        <select id="customerId" formControlName="customerId">
+          <option value="">-- Select Customer --</option>
+          <option *ngFor="let customer of customers" [value]="customer._id">
+            {{ customer.name }} ({{ customer.phone }})
+          </option>
+        </select>
+      </div>
+
+      <div class="lines" formArrayName="lines">
+        <article class="line-card" *ngFor="let line of lines.controls; let i = index" [formGroupName]="i">
+          <div class="line-head">
+            <h2>Item {{ i + 1 }}</h2>
+            <button type="button" class="remove-line" (click)="removeLine(i)" [disabled]="lines.length === 1">Remove</button>
+          </div>
+
+          <div class="line-grid">
+            <div class="field">
+              <label [for]="'item-' + i">Item</label>
+              <select [id]="'item-' + i" formControlName="itemId" (change)="onItemChange(i)">
+                <option value="">-- Select Item --</option>
+                <option *ngFor="let item of items" [value]="item.id">{{ item.name }} ({{ item.price }}/{{ item.unit }})</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label [for]="'mode-' + i">Sale Type</label>
+              <select [id]="'mode-' + i" formControlName="calcMode" (change)="onModeChange(i)" [disabled]="!line.get('itemId')?.value">
+                <option value="quantity">By Quantity</option>
+                <option value="amount">By Amount (Rs)</option>
+              </select>
+            </div>
+
+            <div class="field" *ngIf="!isMassLine(i)">
+              <label [for]="'unit-' + i">Unit</label>
+              <select [id]="'unit-' + i" formControlName="unit" (change)="onUnitChange(i)" [disabled]="!line.get('itemId')?.value">
+                <option value="" *ngIf="!line.get('unit')?.value">-- Select Unit --</option>
+                <option *ngFor="let option of getUnitOptionsForLine(i)" [value]="option.value">{{ option.label }}</option>
+              </select>
+            </div>
+
+            <div class="field" *ngIf="line.get('calcMode')?.value === 'quantity' && !isMassLine(i)">
+              <label [for]="'qty-' + i">Quantity ({{ getSelectedUnitLabel(i) }})</label>
+              <input [id]="'qty-' + i" type="number" min="0.001" step="0.001" formControlName="quantity" (input)="onQuantityChange(i)" [disabled]="!line.get('itemId')?.value" />
+              <div class="quick-row">
+                <button type="button" class="quick-btn" *ngFor="let option of getQuickQuantityOptions(i)" (click)="setQuickQuantity(i, option.value)">
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <div class="field" *ngIf="line.get('itemId')?.value">
+              <label [for]="'rate-' + i">Rate (Rs per {{ getSelectedUnitLabel(i) }})</label>
+              <input
+                [id]="'rate-' + i"
+                type="number"
+                min="0.01"
+                step="0.01"
+                formControlName="rate"
+                (input)="onRateChange(i)"
+              />
+            </div>
+
+            <div class="field mixed-field" *ngIf="line.get('calcMode')?.value === 'quantity' && isMassLine(i)">
+              <label [for]="'mixed-' + i">Type Qty in Kg/Gram (easy)</label>
+              <input
+                [id]="'mixed-' + i"
+                type="text"
+                formControlName="mixedInput"
+                placeholder="Example: 1kg 50g or 1kg 20g"
+                (input)="onMixedInputChange(i)"
+                [disabled]="!line.get('itemId')?.value"
+              />
+              <div class="quick-row">
+                <button
+                  type="button"
+                  class="quick-btn mixed"
+                  *ngFor="let ex of getMixedMassExamples()"
+                  (click)="setMixedExample(i, ex)"
+                >
+                  {{ ex }}
+                </button>
+              </div>
+            </div>
+
+            <div class="field" *ngIf="line.get('calcMode')?.value === 'amount'">
+              <label [for]="'amt-' + i">Amount (Rs)</label>
+              <input [id]="'amt-' + i" type="number" min="1" step="0.01" formControlName="amount" (input)="onAmountChange(i)" [disabled]="!line.get('itemId')?.value" />
+              <div class="quick-row">
+                <button type="button" class="quick-btn amount" *ngFor="let option of getQuickAmountOptions()" (click)="setQuickAmount(i, option.value)">
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="line-hint" *ngIf="!line.get('itemId')?.value">Select item first. Then unit and quantity options will appear.</p>
+
+          <div class="line-summary">
+            <p>
+              Qty: <strong>{{ line.get('computedQuantity')?.value || 0 }}</strong>
+              <span>{{ line.get('unit')?.value }}</span>
+            </p>
+            <p>
+              Rate: <strong>Rs {{ (line.get('rate')?.value || 0) | number: '1.2-2' }}</strong>
+            </p>
+            <p>
+              Total: <strong>Rs {{ (line.get('lineTotal')?.value || 0) | number: '1.2-4' }}</strong>
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <div class="add-line-wrap">
+        <button class="add-line" type="button" (click)="addLine()">+ Add Another Item</button>
+      </div>
+
+      <div class="summary">
+        <p class="summary-label">Grand Total</p>
+        <p class="summary-value">Rs {{ getGrandTotal() | number: '1.2-4' }}</p>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="submit" [disabled]="loading">{{ loading ? 'Recording...' : 'Record Sale' }}</button>
+        <button class="secondary" type="button" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </article>
+
+  <aside class="customer-summary-panel">
+    <h2>Customer Summary</h2>
+    <label class="date-filter-label">Select Date</label>
+    <div class="date-picker-wrap">
+      <button type="button" class="date-trigger" (click)="toggleDatePicker($event)" [attr.aria-expanded]="isDatePickerOpen">
+        <span>{{ formatDate(dateFilter) }}</span>
+        <span class="calendar-icon">📅</span>
+      </button>
+
+      <div class="calendar-overlay" *ngIf="isDatePickerOpen" (click)="closeDatePicker()"></div>
+
+      <div class="calendar-pop" [class.above]="datePickerAbove" *ngIf="isDatePickerOpen" (click)="$event.stopPropagation()">
+        <div class="calendar-head">
+          <button type="button" class="month-nav" (click)="prevCalendarMonth()">‹</button>
+          <strong>{{ getCalendarMonthLabel() }}</strong>
+          <button type="button" class="month-nav" (click)="nextCalendarMonth()">›</button>
+        </div>
+
+        <div class="week-row">
+          <span *ngFor="let day of weekDays">{{ day }}</span>
+        </div>
+
+        <div class="day-grid">
+          <button
+            type="button"
+            class="day-btn"
+            *ngFor="let day of calendarDays"
+            [class.outside]="!day.inCurrentMonth"
+            [class.selected]="isSelectedCalendarDate(day.isoDate)"
+            (click)="selectCalendarDate(day.isoDate)"
+          >
+            {{ day.label }}
+          </button>
+        </div>
+
+        <button type="button" class="close-cal" (click)="closeDatePicker()">Done</button>
+      </div>
+    </div>
+
+    <ng-container *ngIf="selectedCustomerName; else noCustomerSelected">
+      <p class="customer-name">{{ selectedCustomerName }}</p>
+      <div class="summary-grid">
+        <article class="summary-tile">
+          <span>Items Bought</span>
+          <strong>{{ customerSummary?.itemTypes || 0 }}</strong>
+        </article>
+        <article class="summary-tile">
+          <span>Total Orders</span>
+          <strong>{{ customerSummary?.totalOrders || 0 }}</strong>
+        </article>
+        <article class="summary-tile">
+          <span>Total Quantity</span>
+          <strong>{{ customerSummary?.totalQuantity || 0 }}</strong>
+        </article>
+        <article class="summary-tile">
+          <span>Total Cost</span>
+          <strong>Rs {{ (customerSummary?.totalCost || 0) | number: '1.2-2' }}</strong>
+        </article>
+      </div>
+      <p class="last-date">
+        Last Buy Date: <strong>{{ formatDate(customerSummary?.lastPurchaseDate || null) }}</strong>
+      </p>
+
+      <div class="date-sales-box">
+        <h3>Selected Date Purchases</h3>
+        <p class="date-meta">
+          Date: <strong>{{ formatDate(dateFilter) }}</strong> |
+          Orders: <strong>{{ selectedDateSalesForCustomer.length }}</strong> |
+          Qty: <strong>{{ getSelectedDateTotalQty() | number: '1.0-3' }}</strong> |
+          Cost: <strong>Rs {{ getSelectedDateTotalCost() | number: '1.2-2' }}</strong>
+        </p>
+        <ul *ngIf="selectedDateSalesForCustomer.length; else noSalesOnSelectedDate" class="date-sales-list">
+          <li *ngFor="let sale of selectedDateSalesForCustomer">
+            <span>{{ getItemName(sale.itemId) }} - {{ sale.quantity }} {{ sale.unit }}</span>
+            <strong>Rs {{ sale.totalPrice | number: '1.2-2' }}</strong>
+          </li>
+        </ul>
+        <ng-template #noSalesOnSelectedDate>
+          <p class="summary-empty">No purchase on selected date.</p>
+        </ng-template>
+      </div>
+
+      <div class="date-sales-box">
+        <h3>Last 7 Days Purchases</h3>
+        <p class="date-meta">
+          Orders: <strong>{{ lastWeekSalesForCustomer.length }}</strong> |
+          Qty: <strong>{{ getLastWeekTotalQty() | number: '1.0-3' }}</strong> |
+          Cost: <strong>Rs {{ getLastWeekTotalCost() | number: '1.2-2' }}</strong>
+        </p>
+        <ul *ngIf="lastWeekSalesForCustomer.length; else noSalesOnDate" class="date-sales-list">
+          <li *ngFor="let sale of lastWeekSalesForCustomer">
+            <span>{{ getItemName(sale.itemId) }} - {{ sale.quantity }} {{ sale.unit }}</span>
+            <strong>Rs {{ sale.totalPrice | number: '1.2-2' }}</strong>
+          </li>
+        </ul>
+        <ng-template #noSalesOnDate>
+          <p class="summary-empty">No purchase in last 7 days.</p>
+        </ng-template>
+      </div>
+
+      <div class="receipt-box" *ngIf="currentReceipt">
+        <h3>Current Recorded Sale</h3>
+        <p class="date-meta">Customer: <strong>{{ currentReceipt.customerName }}</strong></p>
+        <p class="date-meta">Date: <strong>{{ formatDate(currentReceipt.saleDate) }}</strong></p>
+        <ul class="date-sales-list">
+          <li *ngFor="let line of currentReceipt.lines">
+            <span>{{ line.itemName }} - {{ line.quantity }} {{ line.unit }}</span>
+            <strong>Rs {{ line.totalPrice | number: '1.2-2' }}</strong>
+          </li>
+        </ul>
+        <p class="date-meta">Total Amount: <strong>Rs {{ currentReceipt.grandTotal | number: '1.2-2' }}</strong></p>
+        <button type="button" class="print-btn" (click)="printSummary()">Print</button>
+      </div>
+    </ng-container>
+    <ng-template #noCustomerSelected>
+      <p class="summary-empty">Select customer to view purchase summary.</p>
+    </ng-template>
+  </aside>
+  </div>
+</section>

@@ -1,0 +1,281 @@
+.page-content {
+  background: var(--app-surface);
+  border-radius: 12px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--app-line);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.list-header {
+  margin-bottom: 16px;
+}
+.list-header .header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.search-area {
+  margin-top: 12px;
+}
+.list-header .actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+.search-wrapper input {
+  padding: 12px 40px 12px 40px;
+  height: 44px;
+  border: 1px solid var(--app-line);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: var(--app-surface);
+  font-size: 14px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02) inset;
+}
+.search-wrapper input:focus {
+  outline: none;
+  border-color: var(--app-primary);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--app-primary) 22%, transparent);
+}
+.search-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.search-wrapper .search-icon svg {
+  display: block;
+  fill: var(--app-muted-600);
+}
+
+/* voice button next to search */
+.search-wrapper .voice {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  color: var(--app-muted-600);
+}
+.search-wrapper .voice .voice-icon {
+  width: 16px;
+  height: 16px;
+}
+.search-wrapper .voice.listening {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--app-primary) 16%, transparent);
+}
+
+.divider {
+  height: 1px;
+  background: var(--app-line);
+  border: none;
+  margin: 16px 0 18px 0;
+  width: 100%;
+}
+
+.warehouse-details-panel {
+  margin: 0 0 18px;
+}
+
+.btn.add {
+  background: linear-gradient(120deg, var(--app-primary), var(--app-primary-deep));
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: var(--app-shadow-sm);
+}
+.btn.add .plus-icon {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.btn.add span {
+  margin-right: 4px;
+}
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+.item-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-line);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--app-shadow-sm);
+}
+.card-img {
+  height: 160px;
+  background: var(--app-surface-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-img img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+}
+.img-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.img-placeholder svg {
+  width: 40px;
+  height: 40px;
+  fill: var(--app-muted-600);
+}
+
+.card-body {
+  padding: 12px 16px;
+  flex-grow: 1;
+}
+.card-body h4 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+.qty {
+  margin: 4px 0;
+  color: var(--app-muted-600);
+  font-size: 0.95rem;
+}
+.unit-pill {
+  display: inline-block;
+  background: var(--app-surface-soft);
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  margin-left: 4px;
+}
+.price-pill {
+  display: inline-block;
+  background: color-mix(in srgb, var(--app-primary) 12%, var(--app-surface));
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-top: 1px solid var(--app-line);
+}
+.card-actions .left-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  background-color: var(--app-primary);
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-size: 0.9rem;
+}
+.edit-plain {
+  background: transparent;
+  border: none;
+  color: var(--app-ink-700);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 4px 6px;
+}
+
+.buy-plain {
+  background: color-mix(in srgb, var(--app-primary) 12%, var(--app-surface));
+  border: 1px solid color-mix(in srgb, var(--app-primary) 30%, var(--app-surface));
+  color: var(--app-primary-deep);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+}
+.delete-icon {
+  color: var(--app-danger);
+  background: transparent;
+  border-radius: 50%;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--app-danger) 28%, transparent);
+}
+.tiny {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.warehouse-info {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.available-badge {
+  background: var(--app-success-soft);
+  color: var(--app-success);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.unavailable-badge {
+  background: var(--app-danger-soft);
+  color: var(--app-danger);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.warehouse-link {
+  background: color-mix(in srgb, var(--app-primary) 14%, var(--app-surface));
+  color: var(--app-primary-deep);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--app-primary) 24%, var(--app-surface));
+    color: var(--app-primary-deep);
+  }
+}

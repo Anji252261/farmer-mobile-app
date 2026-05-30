@@ -1,0 +1,83 @@
+<section class="sub-dashboard">
+  <div class="hero">
+    <p class="eyebrow">Sub Owner Dashboard</p>
+    <h1>Simple Business View</h1>
+    <p>All key numbers in one screen. Easy to understand and easy to use.</p>
+  </div>
+
+  <ng-container *ngIf="!loading; else loadingState">
+    <div class="stats-grid">
+      <article class="stat-card">
+        <p>Total Items</p>
+        <strong>{{ totalItems }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Total Customers</p>
+        <strong>{{ totalCustomers }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Total Orders</p>
+        <strong>{{ totalOrders }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Today Sale</p>
+        <strong>Rs {{ todaySaleAmount | number: '1.0-2' }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Last 7 Days Sale</p>
+        <strong>Rs {{ last7DaysSaleAmount | number: '1.0-2' }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Top Selling Item</p>
+        <strong>{{ topSellingItemName }}</strong>
+      </article>
+    </div>
+
+    <div class="content-grid">
+      <article class="panel ai-panel">
+        <div class="panel-head">
+          <h2>AI Helper Tips</h2>
+          <span>Smart Suggestion</span>
+        </div>
+
+        <div class="tips">
+          <article class="tip" *ngFor="let tip of aiTips" [class.tip-high]="tip.level === 'high'">
+            <h3>{{ tip.title }}</h3>
+            <p>{{ tip.message }}</p>
+            <a [routerLink]="tip.actionLink">{{ tip.actionText }}</a>
+          </article>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <h2>Low Stock List</h2>
+          <span>{{ lowStockItems.length }} item(s)</span>
+        </div>
+
+        <ul class="simple-list" *ngIf="lowStockItems.length; else noLowStock">
+          <li *ngFor="let item of lowStockItems">
+            <span>{{ item.name }}</span>
+            <strong>{{ item.quantity }} {{ item.unit }}</strong>
+          </li>
+        </ul>
+
+        <ng-template #noLowStock>
+          <p class="empty">No low stock right now.</p>
+        </ng-template>
+      </article>
+    </div>
+
+    <div class="quick-actions">
+      <a routerLink="/sub-owner/sales/new">Record New Sale</a>
+      <a routerLink="/sub-owner/customers">Manage Customers</a>
+      <a routerLink="/sub-owner/items">Manage Items</a>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingState>
+    <article class="panel">
+      <p class="empty">Loading dashboard...</p>
+    </article>
+  </ng-template>
+</section>
