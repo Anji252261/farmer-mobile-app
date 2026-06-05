@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Customer } from '../../models/customer.model';
-import { AuthService } from '../../core/auth.service';
 import { CustomerService } from '../../services/customer.service';
 import { ToastService } from '../../shared/services/toast.service';
 
@@ -26,7 +25,6 @@ export class CustomerListComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private customerSvc: CustomerService,
-    private auth: AuthService,
     private toast: ToastService
   ) {}
 
@@ -54,13 +52,14 @@ export class CustomerListComponent implements OnInit {
   }
 
   private load() {
-    // const ownerId = this.auth.currentUserValue?.id || '';
-    // this.customerSvc.getByOwner(ownerId).subscribe(data => {
-    //   this.customers = data;
-    // });
-    this.customerSvc.getCustomer().subscribe((res:any) => {
-      this.customers = res.data;
-     
+    this.customerSvc.getAll().subscribe({
+      next: customers => {
+        this.customers = customers;
+      },
+      error: err => {
+        this.toast.error('Failed to load customers');
+        console.error(err);
+      }
     });
   }
 

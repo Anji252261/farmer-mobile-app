@@ -1,3 +1,10 @@
+export interface ApiPurchaseEntry {
+  quantity: number;
+  purchasePrice: number;
+  date: string;
+  note?: string;
+}
+
 export interface PurchaseEntry {
   id: string;
   supplierName: string;
@@ -13,17 +20,27 @@ export interface PurchaseEntry {
 export interface Item {
   id: string;
   name: string;
-  unit: string; // e.g., kg, piece
-  price: number; // decided by Sub Owner
-  quantity?: number; // available quantity
-  image?: string; // base64 or URL
-  ownerId: string; // sub-owner who added it
+  unit: string;
+  price: number;
+  quantity?: number;
+  image?: string;
+  ownerId: string;
   createdAt?: string;
-  vendor?: string; // vendor/supplier name
-  purchaseDate?: string; // when item was purchased
-  paid?: boolean; // payment status
+  vendor?: string;
+  purchaseDate?: string;
+  paid?: boolean;
   paymentProofImage?: string;
-  availableInWarehouse?: boolean; // is item available in warehouse
-  availableQuantity?: number; // quantity available in warehouse
+  availableInWarehouse?: boolean;
+  availableQuantity?: number;
+  lowStockThreshold?: number;
   purchaseHistory?: PurchaseEntry[];
+}
+
+export interface ItemApiPayload {
+  name: string;
+  unit: string;
+  price: number;
+  quantity: number;
+  lowStockThreshold?: number;
+  purchaseEntry?: ApiPurchaseEntry;
 }

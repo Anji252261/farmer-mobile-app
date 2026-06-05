@@ -38,7 +38,7 @@ export class UserService {
   }
 
   get(id: string) {
-    return this.http.get<unknown>(`${this.subOwnersUrl}/${id}`).pipe(
+    return this.http.get<unknown>(`${this.usersUrl}/${id}`).pipe(
       map(response => this.extractSingleUser(response))
     );
   }
@@ -179,6 +179,7 @@ export class UserService {
       password: typeof user.password === 'string' ? user.password : undefined,
       phone: user.phone,
       shopName: user.shopName,
+      parentOwnerId: user.parentOwnerId,
       role: 'SUB_OWNER',
       token: user.token
     };

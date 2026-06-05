@@ -4,7 +4,6 @@ import { ItemService } from '../../services/item.service';
 import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Item } from '../../models/item.model';
-import { AuthService } from '../../core/auth.service';
 import { ItemModalComponent } from './item-modal.component';
 import { WarehouseDetailsComponent } from './warehouse-details.component';
 import { ToastService } from '../../shared/services/toast.service';
@@ -31,7 +30,6 @@ export class ItemListComponent implements OnInit {
 
   constructor(
     private itemSvc: ItemService,
-    private auth: AuthService,
     private toast: ToastService
   ) {}
 
@@ -40,8 +38,7 @@ export class ItemListComponent implements OnInit {
   }
 
   private loadItems() {
-    const ownerId = this.auth.currentUserValue?.id || '';
-    this.items$ = this.itemSvc.getByOwner(ownerId);
+    this.items$ = this.itemSvc.getByOwner();
     this.filteredItems$ = combineLatest([this.items$, this.filter$]).pipe(
       map(([items, filter]) =>
         items.filter(i =>
@@ -85,18 +82,21 @@ export class ItemListComponent implements OnInit {
   }
 
   save(item: any) {
-    if (item.id) {
-      this.itemSvc.update(item).subscribe(() => {
+    const buyMore = this.showAvailabilityFieldsInForm;
+    const request$ = item.id
+      ? this.itemSvc.update({ ...item, buyMore })
+      : this.itemSvc.create(item);
+
+    request$.subscribe({
+      next: () => {
         this.loadItems();
-        this.toast.success('Item updated');
-      });
-    } else {
-      this.itemSvc.create(item).subscribe(() => {
-        this.loadItems();
-        this.toast.success('Item created');
-      });
-    }
-    this.closeModal();
+        this.toast.success(item.id ? 'Item updated' : 'Item created');
+        this.closeModal();
+      },
+      error: () => {
+        this.toast.error(item.id ? 'Failed to update item' : 'Failed to create item');
+      }
+    });
   }
 
   delete(item: Item) {

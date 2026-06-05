@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../core/auth.service';
-import { ItemService } from '../../services/item.service';
-import { CustomerService } from '../../services/customer.service';
-import { SaleService } from '../../services/sale.service';
-import { Item } from '../../models/item.model';
-import { Sale } from '../../models/sale.model';
-import { Customer } from '../../models/customer.model';
-import { forkJoin } from 'rxjs';
+import { DashboardService } from '../../services/dashboard.service';
+import { DashboardMetrics } from '../../models/dashboard.model';
+import { finalize } from 'rxjs';
 
 interface AiTip {
   level: 'high' | 'normal';
@@ -27,91 +22,66 @@ interface AiTip {
 })
 export class SubOwnerDashboardComponent implements OnInit {
   loading = true;
-  items: Item[] = [];
-  customers: Customer[] = [];
-  sales: Sale[] = [];
+  metrics: DashboardMetrics = {
+    totalItems: 0,
+    totalCustomers: 0,
+    totalOrders: 0,
+    todaySaleAmount: 0,
+    last7DaysSaleAmount: 0,
+    topSellingItem: 'No sales yet',
+    lowStockItems: []
+  };
 
-  constructor(
-    private auth: AuthService,
-    private itemSvc: ItemService,
-    private customerSvc: CustomerService,
-    private saleSvc: SaleService
-  ) {}
+  constructor(private dashboardSvc: DashboardService) {}
 
   ngOnInit(): void {
-    const ownerId = this.auth.currentUserValue?.id || '';
-    forkJoin({
-      items: this.itemSvc.getByOwner(ownerId),
-      customers: this.customerSvc.getByOwner(ownerId),
-      sales: this.saleSvc.getByOwner(ownerId)
-    }).subscribe(({ items, customers, sales }) => {
-      this.items = items;
-      this.customers = customers;
-      this.sales = sales;
-      this.loading = false;
-    });
+    this.dashboardSvc
+      .getMetrics()
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: metrics => {
+          this.metrics = metrics;
+        },
+        error: () => {
+          this.metrics = {
+            totalItems: 0,
+            totalCustomers: 0,
+            totalOrders: 0,
+            todaySaleAmount: 0,
+            last7DaysSaleAmount: 0,
+            topSellingItem: 'No sales yet',
+            lowStockItems: []
+          };
+        }
+      });
   }
 
   get totalItems(): number {
-    return this.items.length;
+    return this.metrics.totalItems;
   }
 
   get totalCustomers(): number {
-    return this.customers.length;
+    return this.metrics.totalCustomers;
   }
 
   get totalOrders(): number {
-    return this.sales.length;
+    return this.metrics.totalOrders;
   }
 
   get todaySaleAmount(): number {
-    const today = this.toDateInput(new Date());
-    return this.sales
-      .filter(sale => this.toDateInput(sale.date) === today)
-      .reduce((sum, sale) => sum + Number(sale.totalPrice || 0), 0);
+    return this.metrics.todaySaleAmount;
   }
 
   get last7DaysSaleAmount(): number {
-    const now = new Date();
-    const weekAgo = new Date(now);
-    weekAgo.setDate(now.getDate() - 7);
-
-    return this.sales.reduce((sum, sale) => {
-      const dt = new Date(sale.date);
-      if (Number.isNaN(dt.getTime()) || dt < weekAgo || dt > now) {
-        return sum;
-      }
-      return sum + Number(sale.totalPrice || 0);
-    }, 0);
-  }
-
-  get lowStockItems(): Item[] {
-    return this.items
-      .filter(item => Number(item.quantity || 0) <= 10)
-      .sort((a, b) => Number(a.quantity || 0) - Number(b.quantity || 0));
+    return this.metrics.last7DaysSaleAmount;
   }
 
   get topSellingItemName(): string {
-    if (!this.sales.length) {
-      return 'No sales yet';
-    }
+    return this.metrics.topSellingItem || 'No sales yet';
+  }
 
-    const totals = new Map<string, number>();
-    this.sales.forEach(sale => {
-      const qty = Number(sale.quantity || 0);
-      totals.set(sale.itemId, (totals.get(sale.itemId) || 0) + qty);
-    });
-
-    let topItemId = '';
-    let topQty = 0;
-    totals.forEach((qty, itemId) => {
-      if (qty > topQty) {
-        topQty = qty;
-        topItemId = itemId;
-      }
-    });
-
-    return this.items.find(item => item.id === topItemId)?.name || 'Unknown item';
+  get lowStockItems() {
+    return this.metrics.lowStockItems;
   }
 
   get aiTips(): AiTip[] {
@@ -127,7 +97,7 @@ export class SubOwnerDashboardComponent implements OnInit {
       });
     }
 
-    if (this.customers.length < 5) {
+    if (this.totalCustomers < 5) {
       tips.push({
         level: 'normal',
         title: 'Grow Customer List',
@@ -137,7 +107,7 @@ export class SubOwnerDashboardComponent implements OnInit {
       });
     }
 
-    if (this.sales.length === 0) {
+    if (this.totalOrders === 0) {
       tips.push({
         level: 'normal',
         title: 'Start First Sale',
@@ -158,16 +128,5 @@ export class SubOwnerDashboardComponent implements OnInit {
     }
 
     return tips;
-  }
-
-  private toDateInput(date: string | Date): string {
-    const dt = date instanceof Date ? date : new Date(date);
-    if (Number.isNaN(dt.getTime())) {
-      return '';
-    }
-    const year = dt.getFullYear();
-    const month = String(dt.getMonth() + 1).padStart(2, '0');
-    const day = String(dt.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 }

@@ -36,7 +36,7 @@ import { Sale } from '../../models/sale.model';
           <h2>Sales</h2>
           <ul>
             <li *ngFor="let sale of sales$ | async">
-              <span>{{ sale.itemId }} x {{ sale.quantity }} {{ sale.unit }}</span>
+              <span>{{ sale.customerName || 'Customer' }} · {{ sale.quantity }} {{ sale.unit || 'units' }}</span>
               <strong>Rs {{ sale.totalPrice }}</strong>
             </li>
           </ul>

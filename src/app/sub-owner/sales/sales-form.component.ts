@@ -5,10 +5,9 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { Router } from '@angular/router';
 import { ItemService } from '../../services/item.service';
 import { SaleService } from '../../services/sale.service';
-import { AuthService } from '../../core/auth.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { Item } from '../../models/item.model';
-import { finalize, forkJoin } from 'rxjs';
+import { finalize } from 'rxjs';
 import { Customer } from '../../models/customer.model';
 import { CustomerService } from '../../services/customer.service';
 import { Sale } from '../../models/sale.model';
@@ -101,7 +100,6 @@ export class SalesFormComponent implements OnInit {
     private itemSvc: ItemService,
     private saleSvc: SaleService,
     private customerSvc: CustomerService,
-    private auth: AuthService,
     private router: Router,
     private toast: ToastService
   ) {}
@@ -111,24 +109,33 @@ export class SalesFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const ownerId = this.auth.currentUserValue?.id || '';
     this.dateFilter = this.toDateInput(new Date());
     this.syncCalendarWithFilter();
     this.buildCalendarDays();
-    this.itemSvc.getByOwner(ownerId).subscribe(items => {
-      this.items = items;
-      if (!this.lines.length) {
-        this.addLine();
-      }
+
+    this.itemSvc.getByOwner().subscribe({
+      next: items => {
+        this.items = items;
+        if (!this.lines.length) {
+          this.addLine();
+        }
+      },
+      error: () => this.toast.error('Failed to load items')
     });
 
-    // this.customerSvc.getByOwner(ownerId).subscribe(customers => {
-    //   this.customers = customers;
-    // });
+    this.customerSvc.getAll().subscribe({
+      next: customers => {
+        this.customers = customers;
+      },
+      error: () => this.toast.error('Failed to load customers')
+    });
 
-    this.saleSvc.getByOwner(ownerId).subscribe(sales => {
-      this.salesHistory = sales;
-      this.updateCustomerSummary(String(this.form.get('customerId')?.value || ''));
+    this.saleSvc.getByOwner().subscribe({
+      next: sales => {
+        this.salesHistory = sales;
+        this.updateCustomerSummary(String(this.form.get('customerId')?.value || ''));
+      },
+      error: () => this.toast.error('Failed to load sales history')
     });
 
     this.form.get('customerId')?.valueChanges.subscribe(customerId => {
@@ -741,65 +748,70 @@ export class SalesFormComponent implements OnInit {
       return;
     }
 
-    const ownerId = this.auth.currentUserValue?.id || '';
     const customerId = String(this.form.get('customerId')?.value || '');
     const customerName = this.getCustomerNameById(customerId);
+    const saleDate = this.toDateInput(new Date());
 
-    const payloads = this.lines.controls.map(control => {
+    const lines = this.lines.controls.map(control => {
       const itemId = String(control.get('itemId')?.value || '');
       const unit = String(control.get('unit')?.value || '');
       const quantity = this.toNumber(control.get('computedQuantity')?.value);
       const totalPrice = this.toNumber(control.get('lineTotal')?.value);
+      const unitPrice = quantity > 0 ? this.roundTo(totalPrice / quantity, 2) : 0;
 
-      return {
-        itemId,
-        ownerId,
-        customerId,
-        customerName,
-        quantity,
-        unit,
-        totalPrice,
-        date: new Date().toISOString()
-      };
+      return { itemId, unit, quantity, totalPrice, unitPrice };
     });
 
-    const validPayloads = payloads.filter(line => line.itemId && line.unit && line.quantity > 0 && line.totalPrice > 0);
-    if (!validPayloads.length) {
+    const validLines = lines.filter(line => line.itemId && line.unit && line.quantity > 0 && line.totalPrice > 0);
+    if (!validLines.length) {
       this.toast.error('Add at least one valid item line to record sale');
       return;
     }
 
-    if (validPayloads.length < payloads.length) {
+    if (validLines.length < lines.length) {
       this.toast.error('Some incomplete lines were skipped');
     }
 
     this.loading = true;
-    forkJoin(validPayloads.map(payload => this.saleSvc.create(payload)))
+    this.saleSvc
+      .createBulk({
+        customerId,
+        customerName,
+        lines: validLines.map(line => ({
+          itemId: line.itemId,
+          quantity: line.quantity,
+          totalPrice: line.totalPrice,
+          unitPrice: line.unitPrice,
+          customerId,
+          customerName,
+          date: saleDate
+        }))
+      })
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-      next: (createdSales) => {
-        this.salesHistory = [...this.salesHistory, ...createdSales];
-        this.updateCustomerSummary(customerId);
+        next: createdSales => {
+          this.salesHistory = [...this.salesHistory, ...createdSales];
+          this.updateCustomerSummary(customerId);
 
-        this.currentReceipt = {
-          customerName,
-          saleDate: this.toDateInput(new Date()),
-          lines: validPayloads.map(line => ({
-            itemName: this.getItemName(line.itemId),
-            quantity: line.quantity,
-            unit: line.unit,
-            totalPrice: line.totalPrice
-          })),
-          grandTotal: validPayloads.reduce((sum, line) => sum + line.totalPrice, 0)
-        };
+          this.currentReceipt = {
+            customerName,
+            saleDate,
+            lines: validLines.map(line => ({
+              itemName: this.getItemName(line.itemId),
+              quantity: line.quantity,
+              unit: line.unit,
+              totalPrice: line.totalPrice
+            })),
+            grandTotal: validLines.reduce((sum, line) => sum + line.totalPrice, 0)
+          };
 
-        this.toast.success('Sale recorded successfully');
-      },
-      error: (err) => {
-        this.toast.error('Failed to record sale');
-        console.error(err);
-      }
-    });
+          this.toast.success('Sale recorded successfully');
+        },
+        error: err => {
+          this.toast.error('Failed to record sale');
+          console.error(err);
+        }
+      });
   }
 
   cancel() {

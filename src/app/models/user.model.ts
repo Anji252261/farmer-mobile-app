@@ -9,6 +9,7 @@ export interface User {
   shopName?: string;
   role: Role;
   token?: string;
+  parentOwnerId?: string;
 }
 
 export interface CreateSubOwnerPayload {

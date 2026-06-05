@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import { SalesFormComponent } from './sales-form.component';
 import { ItemService } from '../../services/item.service';
 import { SaleService } from '../../services/sale.service';
-import { AuthService } from '../../core/auth.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { CustomerService } from '../../services/customer.service';
 
@@ -26,19 +25,14 @@ describe('SalesFormComponent', () => {
         {
           provide: SaleService,
           useValue: {
-            create: () => of(null)
+            getByOwner: () => of([]),
+            createBulk: () => of([])
           }
         },
         {
           provide: CustomerService,
           useValue: {
-            getByOwner: () => of([])
-          }
-        },
-        {
-          provide: AuthService,
-          useValue: {
-            currentUserValue: { id: '2' }
+            getAll: () => of([])
           }
         },
         {

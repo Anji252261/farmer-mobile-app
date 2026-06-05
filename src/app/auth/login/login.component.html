@@ -16,10 +16,10 @@
       <p class="sub">Use your registered account credentials.</p>
 
       <label>
-        Email
-        <input formControlName="email" type="email" placeholder="you@example.com" inputmode="email" autocomplete="username" autocapitalize="off" />
+        Email or Phone
+        <input formControlName="identifier" type="text" placeholder="you@example.com or 9876543210" inputmode="email" autocomplete="username" autocapitalize="off" />
       </label>
-      <small class="error" *ngIf="form.controls.email.touched && form.controls.email.invalid">Enter a valid email</small>
+      <small class="error" *ngIf="form.controls.identifier.touched && form.controls.identifier.invalid">Enter email or 10-digit phone</small>
 
       <label>
         Password

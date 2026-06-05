@@ -24,10 +24,6 @@ export class AuthService {
     this.initializeFromToken();
   }
 
-  /**
-   * Initialize user from stored JWT token on app startup.
-   * This ensures that after page refresh, the user is still logged in.
-   */
   private initializeFromToken(): void {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -35,10 +31,7 @@ export class AuthService {
     }
 
     try {
-      // Decode JWT to extract user info (JWT format: header.payload.signature)
       const payload = JSON.parse(atob(token.split('.')[1]));
-
-      // Build user object from JWT payload
       const user: User = {
         id: payload.id || payload.sub || '',
         name: payload.name || '',
@@ -46,28 +39,29 @@ export class AuthService {
         role: payload.role || 'SUB_OWNER',
         phone: payload.phone,
         shopName: payload.shopName,
-        token: token
+        parentOwnerId: payload.parentOwnerId,
+        token
       };
 
       if (user.id && user.role) {
         this._currentUser.next(user);
       } else {
-        // Token is missing required fields, clear it
         localStorage.removeItem('token');
       }
     } catch (error) {
-      // Token is invalid or malformed, clear it
       localStorage.removeItem('token');
       console.warn('Invalid token in localStorage:', error);
     }
   }
 
-  login(email: string, password: string) {
+  login(identifier: string, password: string) {
+    const trimmed = identifier.trim();
+    const body = /^\d{10}$/.test(trimmed)
+      ? { phone: trimmed, password }
+      : { email: trimmed, password };
+
     return this.http
-      .post<ApiResponse<LoginResponse>>(`${environment.apiBaseUrl}/auth/login`, {
-        email,
-        password
-      })
+      .post<ApiResponse<LoginResponse>>(`${environment.apiBaseUrl}/auth/login`, body)
       .pipe(
         map((res) => {
           if (!res?.success || !res?.data?.token || !res?.data?.user) {
@@ -77,15 +71,21 @@ export class AuthService {
         }),
         tap((data) => {
           localStorage.setItem('token', data.token);
-          debugger
           this._currentUser.next(data.user);
         })
       );
   }
 
   logout() {
+    const hadToken = !!localStorage.getItem('token');
     localStorage.removeItem('token');
     this._currentUser.next(null);
+
+    if (hadToken) {
+      this.http.post(`${environment.apiBaseUrl}/auth/logout`, {}).subscribe({
+        error: () => undefined
+      });
+    }
   }
 
   get currentUserValue(): User | null {
