@@ -41,6 +41,11 @@ import { AuthService } from '../../../core/auth.service';
               <span class="icon">💰</span><span>Add Sale</span>
             </a>
           </li>
+          <li *ngIf="user.role === 'SUB_OWNER'">
+            <a routerLink="/sub-owner/udhar" routerLinkActive="active" (click)="closed.emit()">
+              <span class="icon">📒</span><span>Udhar Book</span>
+            </a>
+          </li>
         </ul>
       </nav>
     </aside>

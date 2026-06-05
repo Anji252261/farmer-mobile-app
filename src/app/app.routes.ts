@@ -41,6 +41,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: SubOwnerDashboardComponent },
       { path: 'customers', loadComponent: () =>{ return import('./sub-owner/customers/customer-list.component').then(m => m.CustomerListComponent) }},
       { path: 'items', loadComponent: () => import('./sub-owner/items/item-list.component').then(m => m.ItemListComponent) },
+      { path: 'udhar', loadComponent: () => import('./sub-owner/udhar/udhar-book.component').then(m => m.UdharBookComponent) },
       { 
         path: 'sales',
         children: [

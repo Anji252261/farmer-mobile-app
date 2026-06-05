@@ -1,0 +1,142 @@
+<section class="udhar-page">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Unique Feature</p>
+      <h1>Udhar Book</h1>
+      <p>Track village credit (udhar), record payments, and send WhatsApp reminders in one place.</p>
+    </div>
+    <div class="hero-stats">
+      <article class="stat-card">
+        <span>Total Udhar Pending</span>
+        <strong>Rs {{ totalOutstanding | number: '1.0-0' }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Customers With Due</span>
+        <strong>{{ customersWithDue }}</strong>
+      </article>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <article class="card list-card">
+      <div class="list-head">
+        <h2>Credit List</h2>
+        <span class="count">{{ filteredRows.length }}</span>
+      </div>
+
+      <div class="filters">
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
+          placeholder="Search name, phone, village"
+        />
+        <select [(ngModel)]="villageFilter" (ngModelChange)="applyFilters()">
+          <option value="">All villages</option>
+          <option *ngFor="let village of villages" [value]="village">{{ village }}</option>
+        </select>
+      </div>
+
+      <div *ngIf="filteredRows.length; else emptyState" class="rows">
+        <button
+          type="button"
+          class="row"
+          *ngFor="let row of filteredRows"
+          [class.active]="selectedCustomer?._id === row.customer._id"
+          (click)="selectCustomer(row.customer)"
+        >
+          <div class="avatar">{{ initials(row.customer.name) }}</div>
+          <div class="row-main">
+            <h3>{{ row.customer.name }}</h3>
+            <p class="meta">
+              <span *ngIf="row.customer.village">{{ row.customer.village }}</span>
+              <span *ngIf="row.customer.phone">{{ row.customer.phone }}</span>
+            </p>
+            <p class="last-date">Last entry: {{ formatDate(row.lastEntryDate) }}</p>
+          </div>
+          <div class="row-side">
+            <strong [class.due]="row.balance > 0">Rs {{ row.balance | number: '1.0-0' }}</strong>
+            <span class="badge" *ngIf="row.balance > 0">Due</span>
+            <button
+              type="button"
+              class="wa-btn"
+              *ngIf="row.balance > 0"
+              (click)="shareReminder(row.customer, row.balance, $event)"
+            >
+              WhatsApp
+            </button>
+          </div>
+        </button>
+      </div>
+
+      <ng-template #emptyState>
+        <p class="empty">No customers found. Add customers first, then record udhar here.</p>
+      </ng-template>
+    </article>
+
+    <article class="card detail-card">
+      <div class="detail-head" *ngIf="selectedCustomer; else pickCustomer">
+        <div>
+          <h2>{{ selectedCustomer.name }}</h2>
+          <p class="meta">
+            <span *ngIf="selectedCustomer.village">{{ selectedCustomer.village }}</span>
+            <span *ngIf="selectedCustomer.phone">{{ selectedCustomer.phone }}</span>
+          </p>
+        </div>
+        <button type="button" class="ghost" (click)="clearSelection()">Close</button>
+      </div>
+
+      <ng-template #pickCustomer>
+        <h2>Record Udhar / Payment</h2>
+        <p class="hint">Pick a customer from the list to add credit or payment.</p>
+      </ng-template>
+
+      <div class="balance-box" *ngIf="selectedCustomer">
+        <span>Current Balance</span>
+        <strong>Rs {{ selectedBalance | number: '1.0-0' }}</strong>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submitEntry()" novalidate *ngIf="selectedCustomer">
+        <div class="type-toggle">
+          <label>
+            <input type="radio" formControlName="type" value="credit" />
+            <span>Give Udhar</span>
+          </label>
+          <label>
+            <input type="radio" formControlName="type" value="payment" />
+            <span>Receive Payment</span>
+          </label>
+        </div>
+
+        <label>
+          Amount (Rs)
+          <input type="number" formControlName="amount" min="1" placeholder="Enter amount" />
+        </label>
+
+        <label>
+          Note (optional)
+          <input type="text" formControlName="note" placeholder="e.g. seeds, fertilizer" />
+        </label>
+
+        <button type="submit">Save Entry</button>
+      </form>
+
+      <div class="history" *ngIf="selectedCustomer">
+        <h3>History</h3>
+        <ul *ngIf="selectedEntries.length; else noHistory">
+          <li *ngFor="let entry of selectedEntries" [class.payment]="entry.type === 'payment'">
+            <div>
+              <strong>{{ entryLabel(entry.type) }}</strong>
+              <p>{{ formatDate(entry.date) }}</p>
+              <small *ngIf="entry.note">{{ entry.note }}</small>
+            </div>
+            <span>Rs {{ entry.amount | number: '1.0-0' }}</span>
+          </li>
+        </ul>
+        <ng-template #noHistory>
+          <p class="empty">No entries for this customer yet.</p>
+        </ng-template>
+      </div>
+    </article>
+  </div>
+</section>

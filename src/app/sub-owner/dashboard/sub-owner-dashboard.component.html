@@ -31,6 +31,10 @@
         <p>Top Selling Item</p>
         <strong>{{ topSellingItemName }}</strong>
       </article>
+      <article class="stat-card udhar-stat">
+        <p>Udhar Pending</p>
+        <strong>Rs {{ totalUdharPending | number: '1.0-0' }}</strong>
+      </article>
     </div>
 
     <div class="content-grid">
@@ -70,6 +74,7 @@
 
     <div class="quick-actions">
       <a routerLink="/sub-owner/sales/new">Record New Sale</a>
+      <a routerLink="/sub-owner/udhar">Udhar Book</a>
       <a routerLink="/sub-owner/customers">Manage Customers</a>
       <a routerLink="/sub-owner/items">Manage Items</a>
     </div>

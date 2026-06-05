@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DashboardService } from '../../services/dashboard.service';
+import { CreditService } from '../../services/credit.service';
+import { AuthService } from '../../core/auth.service';
 import { DashboardMetrics } from '../../models/dashboard.model';
 import { finalize } from 'rxjs';
 
@@ -32,9 +34,20 @@ export class SubOwnerDashboardComponent implements OnInit {
     lowStockItems: []
   };
 
-  constructor(private dashboardSvc: DashboardService) {}
+  totalUdharPending = 0;
+
+  constructor(
+    private dashboardSvc: DashboardService,
+    private creditSvc: CreditService,
+    private auth: AuthService
+  ) {}
 
   ngOnInit(): void {
+    const ownerId = this.auth.currentUserValue?.id || '';
+    if (ownerId) {
+      this.totalUdharPending = this.creditSvc.getTotalOutstanding(ownerId);
+    }
+
     this.dashboardSvc
       .getMetrics()
       .pipe(finalize(() => (this.loading = false)))
@@ -86,6 +99,16 @@ export class SubOwnerDashboardComponent implements OnInit {
 
   get aiTips(): AiTip[] {
     const tips: AiTip[] = [];
+
+    if (this.totalUdharPending > 0) {
+      tips.push({
+        level: 'high',
+        title: 'Udhar Pending',
+        message: `Rs ${this.totalUdharPending.toFixed(0)} udhar is pending. Follow up with customers today.`,
+        actionText: 'Open Udhar Book',
+        actionLink: '/sub-owner/udhar'
+      });
+    }
 
     if (this.lowStockItems.length > 0) {
       tips.push({
