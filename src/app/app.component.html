@@ -10,10 +10,11 @@
     </div>
 
     <nav class="mobile-tabbar" *ngIf="user.role === 'SUB_OWNER'" aria-label="Sub owner quick navigation">
-      <a routerLink="/sub-owner/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      <a routerLink="/sub-owner/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
       <a routerLink="/sub-owner/customers" routerLinkActive="active">Customers</a>
       <a routerLink="/sub-owner/items" routerLinkActive="active">Items</a>
       <a routerLink="/sub-owner/sales/new" routerLinkActive="active">Sales</a>
+      <a routerLink="/sub-owner/udhar" routerLinkActive="active">Udhar</a>
     </nav>
   </ng-container>
 </ng-container>

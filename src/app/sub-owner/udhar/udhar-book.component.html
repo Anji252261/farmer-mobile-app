@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div class="content-grid">
+  <div class="content-grid" [class.detail-open]="!!selectedCustomer">
     <article class="card list-card">
       <div class="list-head">
         <h2>Credit List</h2>
@@ -83,7 +83,7 @@
             <span *ngIf="selectedCustomer.phone">{{ selectedCustomer.phone }}</span>
           </p>
         </div>
-        <button type="button" class="ghost" (click)="clearSelection()">Close</button>
+        <button type="button" class="ghost back-btn" (click)="clearSelection()">Back to list</button>
       </div>
 
       <ng-template #pickCustomer>
